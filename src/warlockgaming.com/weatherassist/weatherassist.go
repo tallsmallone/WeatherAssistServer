@@ -29,7 +29,6 @@ var calls_per_day int = 0
 // time 
 var one_minute_start time.Time
 var one_day_start time.Time
-var current_time time.Time
 
 func getLocationText(url string) []string {
 	s := strings.Split(url, "/")
@@ -40,11 +39,11 @@ func getLocationText(url string) []string {
 func checkFirstTime() {
 	
 	if one_minute_start.IsZero() {
-		one_minute_start = current_time
+		one_minute_start = time.Now()
 	}
 	
 	if one_day_start.IsZero() {
-		one_day_start = current_time
+		one_day_start = time.Now()
 	}
 }
 
@@ -59,7 +58,7 @@ func checkTime() bool {
 	
 	if difference_minute.Minutes() > 1.0 {
 		calls_per_minute = 1
-		one_minute_start = current_time
+		one_minute_start = time.Now()
 		minute_flag = true
 	} else if calls_per_minute < max_calls_per_minute {
 		calls_per_minute++
@@ -72,7 +71,7 @@ func checkTime() bool {
 	difference_day := time.Since(one_day_start)
 	if difference_day.Hours() > 24.0 {
 		calls_per_day = 1
-		one_day_start = current_time
+		one_day_start = time.Now()
 		day_flag = true
 	} else if calls_per_day < max_calls_per_day {
 		calls_per_day++
@@ -142,9 +141,6 @@ func checkUpResponse(w http.ResponseWriter, req *http.Request) {
 
 func initialize() {
 	var buffer bytes.Buffer
-	
-	// setup timer
-	current_time = time.Now()
 	
 	// create query string
 	buffer.WriteString("http://api.wunderground.com/api/")
