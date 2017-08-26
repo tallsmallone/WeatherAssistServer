@@ -3,7 +3,7 @@
 // Date: 08/09/2017
 // Description:  Main service for WeatherAssist
 
-package weatherAssist
+package main
 
 import (
 	"net/http"
@@ -55,9 +55,9 @@ func checkTime() bool {
 	checkFirstTime()
 	
 	// check for number of attempts per 1 minute
-	difference_ten := time.Since(one_minute_start)
+	difference_minute := time.Since(one_minute_start)
 	
-	if difference_ten.Minutes() > 1.0 {
+	if difference_minute.Minutes() > 1.0 {
 		calls_per_minute = 1
 		one_minute_start = current_time
 		minute_flag = true
@@ -114,6 +114,8 @@ func displayResponse(w http.ResponseWriter, req *http.Request) {
 	ctx := appengine.NewContext(req)
 	client := urlfetch.Client(ctx)
 	resp, err := client.Get(url)
+	
+	//resp, err := http.Get(url)
 	
 	if err != nil {
 		page = "Error getting page"
